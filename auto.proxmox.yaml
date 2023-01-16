@@ -1,0 +1,17 @@
+---
+plugin: community.general.proxmox
+# url can come from envvar PROXMOX_URL
+# user can come from envvar PROXMOX_USER
+# token_id can come from from envvar PROXMOX_TOKEN_ID
+# token_secret can come from envvar PROXMOX_TOKEN_SECRET
+validate_certs: false
+want_facts: true
+want_proxmox_nodes_ansible_host: false
+keyed_groups:
+  - key: proxmox_tags_parsed
+    separator: ""
+    prefix: group
+groups:
+  linux: "'l26' in (proxmox_tags_parsed|list"
+compose:
+  ansible_host: proxmox_agent_interfaces | selectattr('name', 'equalto', 'ens18') | map(attribute='ip-addresses') | flatten | first | replace("/16", "")
